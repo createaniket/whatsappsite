@@ -28,6 +28,7 @@ export function Header({
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const searchRef = useRef<HTMLInputElement | null>(null);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const allSearchTerms: string[] = [...universities, ...subjects];
 
   useEffect(() => {
@@ -44,7 +45,7 @@ export function Header({
       setShowSuggestions(false);
       setSuggestions([]);
     }
-  }, [searchQuery]);
+  }, [searchQuery, allSearchTerms]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
