@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+
 import { GroupChat } from './mockData';
-import { Users, MessageCircle, CheckCircle, Clock, Shield, Info, Calendar, AlertCircle } from 'lucide-react';
+import { MessageCircle, CheckCircle, Shield, Calendar } from 'lucide-react';
 
 interface GroupCardProps {
   group: GroupChat;
@@ -35,64 +35,62 @@ export function GroupCard({ group }: GroupCardProps) {
     );
   };
 
-  const getMemberCountDisplay = () => {
-    switch (group.memberCountType) {
-      case 'exact':
-        return `${group.memberCount} members`;
-      case 'estimated':
-        return `~${group.memberCount} members`;
-      case 'range':
-        return group.memberRange 
-          ? `${group.memberRange.min}-${group.memberRange.max} members`
-          : `~${group.memberCount} members`;
-      case 'estimated':
-        return `${group.memberCount} members`;
-      default:
-        return `${group.memberCount} members`;
-    }
-  };
+  // const getMemberCountDisplay = () => {
+  //   switch (group.memberCountType) {
+  //     case 'exact':
+  //       return `${group.memberCount} members`;
+  //     case 'estimated':
+  //       return `~${group.memberCount} members`;
+  //     case 'range':
+  //       return group.memberRange 
+  //         ? `${group.memberRange.min}-${group.memberRange.max} members`
+  //         : `~${group.memberCount} members`;
+  //     default:
+  //       return `${group.memberCount} members`;
+  //   }
+  // };
 
-  const getDataSourceInfo = () => {
-    switch (group.dataSource) {
-      case 'university_system':
-        return {
-          label: 'University System',
-          description: 'Member count automatically synced from university records',
-          icon: <Shield className="w-3 h-3" />,
-          color: 'text-green-600'
-        };
-      case 'admin_reported':
-        return {
-          label: 'Admin Reported',
-          description: 'Member count reported by group administrators',
-          icon: <Users className="w-3 h-3" />,
-          color: 'text-blue-600'
-        };
-      case 'self_reported':
-        return {
-          label: 'Self Reported',
-          description: 'Member count self-reported by group creators',
-          icon: <Info className="w-3 h-3" />,
-          color: 'text-orange-600'
-        };
-      case 'estimated':
-        return {
-          label: 'Estimated',
-          description: 'Member count estimated based on group activity and engagement',
-          icon: <AlertCircle className="w-3 h-3" />,
-          color: 'text-gray-600'
-        };
-      default:
-        return {
-          label: 'Unknown',
-          description: 'Data source not specified',
-          icon: <AlertCircle className="w-3 h-3" />,
-          color: 'text-gray-600'
-        };
-    }
-  };
+  // const getDataSourceInfo = () => {
+  //   switch (group.dataSource) {
+  //     case 'university_system':
+  //       return {
+  //         label: 'University System',
+  //         description: 'Member count automatically synced from university records',
+  //         icon: <Shield className="w-3 h-3" />,
+  //         color: 'text-green-600'
+  //       };
+  //     case 'admin_reported':
+  //       return {
+  //         label: 'Admin Reported',
+  //         description: 'Member count reported by group administrators',
+  //         icon: <Users className="w-3 h-3" />,
+  //         color: 'text-blue-600'
+  //       };
+  //     case 'self_reported':
+  //       return {
+  //         label: 'Self Reported',
+  //         description: 'Member count self-reported by group creators',
+  //         icon: <Info className="w-3 h-3" />,
+  //         color: 'text-orange-600'
+  //       };
+  //     case 'estimated':
+  //       return {
+  //         label: 'Estimated',
+  //         description: 'Member count estimated based on group activity and engagement',
+  //         icon: <AlertCircle className="w-3 h-3" />,
+  //         color: 'text-gray-600'
+  //       };
+  //     default:
+  //       return {
+  //         label: 'Unknown',
+  //         description: 'Data source not specified',
+  //         icon: <AlertCircle className="w-3 h-3" />,
+  //         color: 'text-gray-600'
+  //       };
+  //   }
+  // };
 
-  const dataSourceInfo = getDataSourceInfo();
+  // const dataSourceInfo = getDataSourceInfo();
   const isDataFresh = new Date(group.lastUpdated) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // Within 7 days
 
   return (
@@ -113,11 +111,11 @@ export function GroupCard({ group }: GroupCardProps) {
       </CardHeader>
       
       <CardContent className="flex-1 pb-3">
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-3">
+        <p className="text-sm text-muted-foreground mb-4 line-clamp-3 text-blue-600">
           {group.description}
         </p>
         
-        <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
+        {/* <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
           <div className="flex items-center space-x-1">
             <Users className="w-4 h-4" />
             <span>{getMemberCountDisplay()}</span>
@@ -144,7 +142,7 @@ export function GroupCard({ group }: GroupCardProps) {
             <Clock className="w-4 h-4" />
             <span>{group.lastActive}</span>
           </div>
-        </div>
+        </div> */}
 
         {/* Data freshness indicator */}
         <div className="flex items-center text-xs text-muted-foreground mb-3">
@@ -160,7 +158,7 @@ export function GroupCard({ group }: GroupCardProps) {
         {group.isVerified && (
           <div className="flex items-center mb-3 p-2 bg-whatsapp-green/10 rounded-lg">
             <Shield className="w-4 h-4 text-whatsapp-green mr-2" />
-            <span className="text-sm text-whatsapp-green">University Verified</span>
+            <span className="text-sm text-whatsapp-green">Verified</span>
           </div>
         )}
         

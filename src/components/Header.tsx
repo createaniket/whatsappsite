@@ -92,7 +92,7 @@ export function Header({
             </h1>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 opacity-0">
             <Button variant="outline" size="sm" onClick={() => setCurrentPage('signin')}>
               <LogIn className="w-4 h-4" />
             </Button>
@@ -152,7 +152,7 @@ export function Header({
             </button>
           </nav>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 opacity-0">
             <Button
               variant="outline"
               size="sm"
