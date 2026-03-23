@@ -119,7 +119,7 @@ function ChartTooltipContent(props: any) {
     hideIndicator = false,
     labelFormatter,
     labelClassName,
-    formatter,
+    // formatter,
     color,
     nameKey,
     labelKey,

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
@@ -27,32 +27,43 @@ export function GroupListings({
   searchQuery,
   setSearchQuery
 }: GroupListingsProps) {
+
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  const allSearchTerms = [...universities, ...subjects];
-  const hasActiveFilters = selectedUniversity !== 'all' || selectedSubject !== 'all' || searchQuery.length > 0;
+  // ✅ FIX: memoize karo
+  const allSearchTerms = useMemo(() => {
+    return [...universities, ...subjects];
+  }, []);
 
-  // Update local search when parent search changes
+  const hasActiveFilters =
+    selectedUniversity !== 'all' ||
+    selectedSubject !== 'all' ||
+    searchQuery.length > 0;
+
+  // Sync with parent search
   useEffect(() => {
     setLocalSearchQuery(searchQuery);
   }, [searchQuery]);
 
-  // Generate suggestions based on local search
+  // ✅ Suggestions logic (no warning now)
   useEffect(() => {
     if (localSearchQuery.length > 0) {
-      const filtered = allSearchTerms.filter(term => 
-        term.toLowerCase().includes(localSearchQuery.toLowerCase())
-      ).slice(0, 5);
+      const filtered = allSearchTerms
+        .filter(term =>
+          term.toLowerCase().includes(localSearchQuery.toLowerCase())
+        )
+        .slice(0, 5);
+
       setSuggestions(filtered);
       setShowSuggestions(filtered.length > 0);
     } else {
       setShowSuggestions(false);
       setSuggestions([]);
     }
-  }, [localSearchQuery]);
+  }, [localSearchQuery, allSearchTerms]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +73,6 @@ export function GroupListings({
 
   const handleSearchChange = (value: string) => {
     setLocalSearchQuery(value);
-    // Update parent search query immediately for live search
     setSearchQuery(value);
   };
 
@@ -86,6 +96,7 @@ export function GroupListings({
     setSearchQuery('');
   };
 
+  
   return (
     <section className="py-12 md:py-16 bg-background" id="browse">
       <div className="container mx-auto px-4">
