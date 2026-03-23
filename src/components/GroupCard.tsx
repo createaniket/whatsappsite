@@ -13,6 +13,30 @@ interface GroupCardProps {
 export function GroupCard({ group }: GroupCardProps) {
   const [hasJoined, setHasJoined] = useState(false);
 
+
+  const desc = group.description?.trim();
+
+  const isNumeric = /^\d+$/.test(desc);
+  const isMainGroup = desc === "Main Group";
+  
+  let text = group.subject;
+  let color = "text-blue-600";
+  
+  if (desc) {
+    if (isNumeric) {
+      text = group.subject;
+      color = "text-orange-500";
+    } else if (isMainGroup) {
+      text = desc;
+      color = "text-green-600";
+    } else {
+      text = desc;
+      color = "text-blue-600";
+    }
+  }
+  
+
+
   const handleJoinGroup = () => {
     setHasJoined(true);
     // In a real app, this would open WhatsApp with the group link
@@ -111,9 +135,11 @@ export function GroupCard({ group }: GroupCardProps) {
       </CardHeader>
       
       <CardContent className="flex-1 pb-3">
-        <p className="text-sm text-muted-foreground mb-4 line-clamp-3 text-blue-600">
-          {group.description}
-        </p>
+
+      <p className={`text-sm mb-4 line-clamp-3 ${color}`}>
+    {text}
+  </p>
+
         
         {/* <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
           <div className="flex items-center space-x-1">
