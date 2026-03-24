@@ -4,8 +4,6 @@ import { Hero } from './components/Hero';
 import { GroupListings } from './components/GroupListings';
 import { UniversitiesPage } from './components/UniversitiesPage';
 import { AboutPage } from './components/AboutPage';
-// import { SignInPage } from './components/SignInPage';
-// import { JoinNowPage } from './components/JoinNowPage';
 
 import { getGroups, getFilters } from './api/groupApi';
 
@@ -13,8 +11,8 @@ type Page = 'home' | 'universities' | 'about' | 'signin' | 'join';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState<Page>('home');
-  const [searchQuery, setSearchQuery] = useState('');
 
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('all');
   const [selectedSubject, setSelectedSubject] = useState('all');
 
@@ -25,64 +23,56 @@ export default function App() {
 
   const groupListingsRef = useRef<HTMLDivElement | null>(null);
 
-  // ✅ FETCH DATA
+  // ✅ FILTERS LOAD
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchFilters = async () => {
       try {
-        setLoading(true);
-
-        const [groupRes, filterRes] = await Promise.all([
-          getGroups(),
-          getFilters(),
-        ]);
-
-        console.log("Groups API:", groupRes);
-        console.log("Filters API:", filterRes);
-
-        setGroups(groupRes?.data || groupRes || []);
-        setUniversities(filterRes?.universities || []);
-        setSubjects(filterRes?.subjects || []);
-
+        const res = await getFilters();
+        setUniversities(res?.universities || []);
+        setSubjects(res?.subjects || []);
       } catch (err) {
-        console.error("API error:", err);
-      } finally {
-        setLoading(false);
+        console.error(err);
       }
     };
 
-    fetchData();
+    fetchFilters();
   }, []);
 
-  // ✅ FILTER LOGIC
-  const filteredGroups = groups.filter((group: any) => {
-    const matchesSearch =
-      group.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      group.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      group.university?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      group.subject?.toLowerCase().includes(searchQuery.toLowerCase());
+  // ✅ GROUPS FETCH (MAIN FIX)
+  useEffect(() => {
+    const delay = setTimeout(async () => {
+      try {
+        setLoading(true);
 
-    const matchesUniversity =
-      selectedUniversity === 'all' || group.university === selectedUniversity;
+        const params: any = {};
 
-    const matchesSubject =
-      selectedSubject === 'all' || group.subject === selectedSubject;
+        if (searchQuery) params.search = searchQuery;
+        if (selectedUniversity !== 'all') params.university = selectedUniversity;
+        if (selectedSubject !== 'all') params.subject = selectedSubject;
 
-    return matchesSearch && matchesUniversity && matchesSubject;
-  });
+        const res = await getGroups(params);
 
-  // ✅ SCROLL LOGIC
+        setGroups(res?.data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(delay);
+  }, [searchQuery, selectedUniversity, selectedSubject]);
+
   const handleSearchFocus = () => {
     if (currentPage === 'home' && groupListingsRef.current) {
       setTimeout(() => {
         groupListingsRef.current?.scrollIntoView({
           behavior: 'smooth',
-          block: 'start',
         });
       }, 100);
     }
   };
 
-  // ✅ PAGE RENDER
   const renderPage = () => {
     switch (currentPage) {
       case 'universities':
@@ -108,15 +98,15 @@ export default function App() {
                 </div>
               ) : (
                 <GroupListings
-                  groups={filteredGroups}
+                  groups={groups}
                   selectedUniversity={selectedUniversity}
                   setSelectedUniversity={setSelectedUniversity}
                   selectedSubject={selectedSubject}
                   setSelectedSubject={setSelectedSubject}
                   searchQuery={searchQuery}
                   setSearchQuery={setSearchQuery}
-                  universities={universities}   // ✅ API filters
-                  subjects={subjects}           // ✅ API filters
+                  universities={universities}
+                  subjects={subjects}
                 />
               )}
             </div>

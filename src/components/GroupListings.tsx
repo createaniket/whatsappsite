@@ -37,24 +37,22 @@ export function GroupListings({
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const searchRef = useRef<HTMLInputElement>(null);
 
-  // ✅ FIX: memoize karo
+  // ✅ memoized search terms
   const allSearchTerms = useMemo(() => {
     return [...universities, ...subjects];
-
-    // This combines universities and subjects into one array of search terms.
-  }, [ universities, subjects]);
+  }, [universities, subjects]);
 
   const hasActiveFilters =
     selectedUniversity !== 'all' ||
     selectedSubject !== 'all' ||
     searchQuery.length > 0;
 
-  // Sync with parent search
+  // sync parent → local
   useEffect(() => {
     setLocalSearchQuery(searchQuery);
   }, [searchQuery]);
 
-  // ✅ Suggestions logic (no warning now)
+  // suggestions
   useEffect(() => {
     if (localSearchQuery.length > 0) {
       const filtered = allSearchTerms
@@ -102,7 +100,6 @@ export function GroupListings({
     setSearchQuery('');
   };
 
-  
   return (
     <section className="py-12 md:py-16 bg-background" id="browse">
       <div className="container mx-auto px-4">
@@ -111,6 +108,7 @@ export function GroupListings({
             <h2 className="text-3xl text-whatsapp-green">Find Your University Groups</h2>
             <DataPrivacyInfo />
           </div>
+
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
             {searchQuery ? (
               <>
@@ -121,7 +119,7 @@ export function GroupListings({
             )}
           </p>
 
-          {/* Large Green Search Box */}
+          {/* SEARCH BOX */}
           <div className="relative max-w-2xl mx-auto">
             <form onSubmit={handleSearchSubmit}>
               <div className="relative">
@@ -147,8 +145,8 @@ export function GroupListings({
                 )}
               </div>
             </form>
-            
-            {/* Search Suggestions */}
+
+            {/* Suggestions */}
             {showSuggestions && suggestions.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-2 bg-card border border-whatsapp-green/20 rounded-lg shadow-lg z-50">
                 {suggestions.map((suggestion, index) => (
@@ -163,149 +161,98 @@ export function GroupListings({
                 ))}
               </div>
             )}
-
-            {/* Quick Search Tags */}
-            <div className="flex flex-wrap gap-2 mt-4 justify-center">
-              {['Oxford', 'Cambridge', 'Computer Science', 'Medicine', 'Engineering', 'Business'].map((tag) => (
-                <button
-                  key={tag}
-                  onClick={() => handleSuggestionClick(tag)}
-                  className="px-4 py-2 text-sm bg-whatsapp-green/10 text-whatsapp-green rounded-full hover:bg-whatsapp-green/20 transition-colors border border-whatsapp-green/20"
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
           </div>
         </div>
 
-        {/* Active Filters Display */}
+        {/* ✅ ACTIVE FILTERS (RESTORED) */}
         {hasActiveFilters && (
           <div className="mb-6 flex flex-wrap items-center gap-2">
             <span className="text-sm text-muted-foreground">Active filters:</span>
+
             {searchQuery && (
               <Badge variant="secondary" className="bg-whatsapp-green/10 text-whatsapp-green">
                 <Search className="w-3 h-3 mr-1" />
                 Search: {searchQuery}
               </Badge>
             )}
+
             {selectedUniversity !== 'all' && (
               <Badge variant="secondary" className="bg-whatsapp-green/10 text-whatsapp-green">
                 University: {selectedUniversity}
-                <button 
-                  onClick={() => setSelectedUniversity('all')}
-                  className="ml-1 hover:bg-whatsapp-green/20 rounded-full p-0.5"
-                >
+                <button onClick={() => setSelectedUniversity('all')} className="ml-1">
                   <X className="w-3 h-3" />
                 </button>
               </Badge>
             )}
+
             {selectedSubject !== 'all' && (
               <Badge variant="secondary" className="bg-whatsapp-green/10 text-whatsapp-green">
                 Subject: {selectedSubject}
-                <button 
-                  onClick={() => setSelectedSubject('all')}
-                  className="ml-1 hover:bg-whatsapp-green/20 rounded-full p-0.5"
-                >
+                <button onClick={() => setSelectedSubject('all')} className="ml-1">
                   <X className="w-3 h-3" />
                 </button>
               </Badge>
             )}
-            <button 
+
+            <button
               onClick={clearAllFilters}
-              className="text-sm text-muted-foreground hover:text-whatsapp-green transition-colors"
+              className="text-sm text-muted-foreground hover:text-whatsapp-green"
             >
               Clear all filters
             </button>
           </div>
         )}
 
+        {/* FILTER DROPDOWNS */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
           <div>
             <h3 className="text-xl mb-2">Available Groups</h3>
             <p className="text-muted-foreground">
-              {groups.length === 0 ? 'No groups found' : 
-               groups.length === 1 ? '1 group found' : 
+              {groups.length === 0 ? 'No groups found' :
+               groups.length === 1 ? '1 group found' :
                `${groups.length} groups found`}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              Member counts updated regularly through university partnerships and admin reports
-            </p>
           </div>
-          
+
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
             <Filter className="w-4 h-4 text-muted-foreground" />
+
             <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
-              <SelectTrigger className="w-48 border-whatsapp-green/20 focus:border-whatsapp-green">
+              <SelectTrigger className="w-48">
                 <SelectValue placeholder="All Universities" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Universities</SelectItem>
-                {universities.map(university => (
-                  <SelectItem key={university} value={university}>
-                    {university}
-                  </SelectItem>
+                {universities.map(u => (
+                  <SelectItem key={u} value={u}>{u}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            
+
             <Select value={selectedSubject} onValueChange={setSelectedSubject}>
-              <SelectTrigger className="w-48 border-whatsapp-green/20 focus:border-whatsapp-green">
+              <SelectTrigger className="w-48">
                 <SelectValue placeholder="All Subjects" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Subjects</SelectItem>
-                {subjects.map(subject => (
-                  <SelectItem key={subject} value={subject}>
-                    {subject}
-                  </SelectItem>
+                {subjects.map(s => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
         </div>
 
+        {/* GROUPS */}
         {groups.length === 0 ? (
           <div className="text-center py-16">
-            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-muted-foreground" />
-            </div>
-            <h3 className="text-xl mb-2">No groups found</h3>
-            <p className="text-muted-foreground mb-4">
-              Try adjusting your search terms or filters to find more groups.
-            </p>
-            {hasActiveFilters && (
-              <button 
-                onClick={clearAllFilters}
-                className="text-whatsapp-green hover:text-whatsapp-dark transition-colors"
-              >
-                Clear all filters and show all groups
-              </button>
-            )}
+            No groups found
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {groups.map(group => (
-              <GroupCard key={group.id} group={group} />
+              <GroupCard key={group._id || group.id} group={group} />
             ))}
-          </div>
-        )}
-
-        {/* Popular searches if no search query */}
-        {!searchQuery && groups.length > 0 && (
-          <div className="mt-12 text-center">
-            <h4 className="text-lg mb-4 text-muted-foreground">Popular searches</h4>
-            <div className="flex flex-wrap gap-2 justify-center">
-              {['Computer Science', 'Medicine', 'Engineering', 'Business', 'Law', 'Psychology'].map((term) => (
-                <button
-                  key={term}
-                  onClick={() => handleSuggestionClick(term)}
-                  className="px-4 py-2 text-sm bg-whatsapp-green/5 text-whatsapp-green rounded-full hover:bg-whatsapp-green/10 transition-colors border border-whatsapp-green/20"
-                >
-                  {term}
-                </button>
-              ))}
-            </div>
           </div>
         )}
       </div>
