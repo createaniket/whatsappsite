@@ -15,3 +15,9 @@ export const getFilters = async () => {
   const res = await axios.get(`${BASE_URL}/api/groupchats/filters`);
   return res.data;
 };
+
+
+export const getUniversityCounts = async () => {
+  const res = await axios.get(`${BASE_URL}/api/groupchats/group-counts`);
+  return res.data;
+};
