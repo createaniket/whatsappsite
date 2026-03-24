@@ -7,6 +7,7 @@ export const getGroups = async (params?: any) => {
     params,
   });
 
+  console.log("Groups API Response:", res.data); // ✅ debug log
   return res.data;
 };
 

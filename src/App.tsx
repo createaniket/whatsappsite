@@ -93,6 +93,8 @@ export default function App() {
           <UniversitiesPage
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            groups={groups}
+            universities={universities}
           />
         );
 

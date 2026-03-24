@@ -2,25 +2,36 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
-import { universities, mockGroupChats } from './mockData';
+// import { universities, mockGroupChats } from './mockData';
 import { Users, MessageCircle, CheckCircle, Search } from 'lucide-react';
 
 interface UniversitiesPageProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  groups: any[];
+  universities: string[];
 }
 
-export function UniversitiesPage({ searchQuery, setSearchQuery }: UniversitiesPageProps) {
+export function UniversitiesPage({
+  searchQuery,
+  setSearchQuery,
+  groups,
+  universities
+}: UniversitiesPageProps) {
   const [localSearch, setLocalSearch] = useState('');
 
   const getUniversityStats = (university: string) => {
-    const groups = mockGroupChats.filter(group => group.university === university);
-    const totalMembers = groups.reduce((sum, group) => sum + group.memberCount, 0);
-    const verifiedGroups = groups.filter(group => group.isVerified).length;
+    const filteredGroups = groups.filter(
+      group => group.university === university
+    );
+  
     return {
-      groupCount: groups.length,
-      memberCount: totalMembers,
-      verifiedCount: verifiedGroups
+      groupCount: filteredGroups.length,
+      memberCount: filteredGroups.reduce(
+        (sum, group) => sum + (group.memberCount || 0),
+        0
+      ),
+      verifiedCount: filteredGroups.filter(g => g.isVerified).length
     };
   };
 

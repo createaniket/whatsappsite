@@ -1,12 +1,18 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
-import { Badge } from './ui/badge';
-import { Input } from './ui/input';
-import { GroupCard } from './GroupCard';
-import { DataPrivacyInfo } from './DataPrivacyInfo';
-import { GroupChat } from './mockData';
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { Badge } from "./ui/badge";
+import { Input } from "./ui/input";
+import { GroupCard } from "./GroupCard";
+import { DataPrivacyInfo } from "./DataPrivacyInfo";
+import { GroupChat } from "./mockData";
 
-import { Filter, Search, X } from 'lucide-react';
+import { Filter, Search, X } from "lucide-react";
 
 interface GroupListingsProps {
   groups: GroupChat[];
@@ -24,9 +30,9 @@ interface GroupListingsProps {
   pagination: any;
 }
 
-export function GroupListings({ 
-  groups, 
-  selectedUniversity, 
+export function GroupListings({
+  groups,
+  selectedUniversity,
   setSelectedUniversity,
   selectedSubject,
   setSelectedSubject,
@@ -36,9 +42,8 @@ export function GroupListings({
   subjects,
   page,
   setPage,
-  pagination
+  pagination,
 }: GroupListingsProps) {
-
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -50,8 +55,8 @@ export function GroupListings({
   }, [universities, subjects]);
 
   const hasActiveFilters =
-    selectedUniversity !== 'all' ||
-    selectedSubject !== 'all' ||
+    selectedUniversity !== "all" ||
+    selectedSubject !== "all" ||
     searchQuery.length > 0;
 
   // sync parent → local
@@ -63,7 +68,7 @@ export function GroupListings({
   useEffect(() => {
     if (localSearchQuery.length > 0) {
       const filtered = allSearchTerms
-        .filter(term =>
+        .filter((term) =>
           term.toLowerCase().includes(localSearchQuery.toLowerCase())
         )
         .slice(0, 5);
@@ -94,17 +99,17 @@ export function GroupListings({
   };
 
   const clearSearch = () => {
-    setLocalSearchQuery('');
-    setSearchQuery('');
+    setLocalSearchQuery("");
+    setSearchQuery("");
     setShowSuggestions(false);
     searchRef.current?.focus();
   };
 
   const clearAllFilters = () => {
-    setSelectedUniversity('all');
-    setSelectedSubject('all');
-    setLocalSearchQuery('');
-    setSearchQuery('');
+    setSelectedUniversity("all");
+    setSelectedSubject("all");
+    setLocalSearchQuery("");
+    setSearchQuery("");
   };
 
   return (
@@ -112,17 +117,22 @@ export function GroupListings({
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-4 mb-4">
-            <h2 className="text-3xl text-whatsapp-green">Find Your University Groups</h2>
+            <h2 className="text-3xl text-whatsapp-green">
+              Find Your University Groups
+            </h2>
             <DataPrivacyInfo />
           </div>
 
           <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
             {searchQuery ? (
               <>
-                Search results for <span className="font-medium text-whatsapp-green">"{searchQuery}"</span>
+                Search results for{" "}
+                <span className="font-medium text-whatsapp-green">
+                  "{searchQuery}"
+                </span>
               </>
             ) : (
-              'Browse verified WhatsApp groups by university and subject'
+              "Browse verified WhatsApp groups by university and subject"
             )}
           </p>
 
@@ -137,8 +147,12 @@ export function GroupListings({
                   placeholder="Search universities, subjects, or groups..."
                   value={localSearchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
-                  onFocus={() => localSearchQuery.length > 0 && setShowSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                  onFocus={() =>
+                    localSearchQuery.length > 0 && setShowSuggestions(true)
+                  }
+                  onBlur={() =>
+                    setTimeout(() => setShowSuggestions(false), 200)
+                  }
                   className="pl-16 pr-16 py-6 text-xl bg-whatsapp-green text-white placeholder-white/80 border-0 rounded-2xl shadow-lg focus:shadow-xl transition-shadow focus:ring-4 focus:ring-whatsapp-green/30 focus:ring-offset-2"
                 />
                 {localSearchQuery && (
@@ -174,28 +188,45 @@ export function GroupListings({
         {/* ✅ ACTIVE FILTERS (RESTORED) */}
         {hasActiveFilters && (
           <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="text-sm text-muted-foreground">Active filters:</span>
+            <span className="text-sm text-muted-foreground">
+              Active filters:
+            </span>
 
             {searchQuery && (
-              <Badge variant="secondary" className="bg-whatsapp-green/10 text-whatsapp-green">
+              <Badge
+                variant="secondary"
+                className="bg-whatsapp-green/10 text-whatsapp-green"
+              >
                 <Search className="w-3 h-3 mr-1" />
                 Search: {searchQuery}
               </Badge>
             )}
 
-            {selectedUniversity !== 'all' && (
-              <Badge variant="secondary" className="bg-whatsapp-green/10 text-whatsapp-green">
+            {selectedUniversity !== "all" && (
+              <Badge
+                variant="secondary"
+                className="bg-whatsapp-green/10 text-whatsapp-green"
+              >
                 University: {selectedUniversity}
-                <button onClick={() => setSelectedUniversity('all')} className="ml-1">
+                <button
+                  onClick={() => setSelectedUniversity("all")}
+                  className="ml-1"
+                >
                   <X className="w-3 h-3" />
                 </button>
               </Badge>
             )}
 
-            {selectedSubject !== 'all' && (
-              <Badge variant="secondary" className="bg-whatsapp-green/10 text-whatsapp-green">
+            {selectedSubject !== "all" && (
+              <Badge
+                variant="secondary"
+                className="bg-whatsapp-green/10 text-whatsapp-green"
+              >
                 Subject: {selectedSubject}
-                <button onClick={() => setSelectedSubject('all')} className="ml-1">
+                <button
+                  onClick={() => setSelectedSubject("all")}
+                  className="ml-1"
+                >
                   <X className="w-3 h-3" />
                 </button>
               </Badge>
@@ -215,23 +246,28 @@ export function GroupListings({
           <div>
             <h3 className="text-xl mb-2">Available Groups</h3>
             <p className="text-muted-foreground">
-              {groups.length === 0 ? 'No groups found' :
-               groups.length === 1 ? '1 group found' :
-               `${groups.length} groups found`}
-            </p>
+  {pagination?.total === 0
+    ? "No groups found"
+    : `Showing ${(page - 1) * 24 + 1} - ${(page - 1) * 24 + groups.length} of ${pagination?.total} groups`}
+</p>
           </div>
 
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
             <Filter className="w-4 h-4 text-muted-foreground" />
 
-            <Select value={selectedUniversity} onValueChange={setSelectedUniversity}>
+            <Select
+              value={selectedUniversity}
+              onValueChange={setSelectedUniversity}
+            >
               <SelectTrigger className="w-48">
                 <SelectValue placeholder="All Universities" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Universities</SelectItem>
-                {universities.map(u => (
-                  <SelectItem key={u} value={u}>{u}</SelectItem>
+                {universities.map((u) => (
+                  <SelectItem key={u} value={u}>
+                    {u}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -242,8 +278,10 @@ export function GroupListings({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Subjects</SelectItem>
-                {subjects.map(s => (
-                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                {subjects.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -252,88 +290,79 @@ export function GroupListings({
 
         {/* GROUPS */}
         {groups.length === 0 ? (
-          <div className="text-center py-16">
-            No groups found
-          </div>
+          <div className="text-center py-16">No groups found</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {groups.map(group => (
+            {groups.map((group) => (
               <GroupCard key={group._id || group.id} group={group} />
             ))}
           </div>
         )}
-
-      
       </div>
 
-
-              {/* ===== 🔥 PAGINATION ADDED ===== */}
-              {pagination && pagination.totalPages > 1 && (
-  <div className="flex justify-center mt-10 gap-2 flex-wrap items-center">
-
-    {/* PREV */}
-    <button
-      disabled={page === 1}
-      onClick={() => setPage(page - 1)}
-      className="px-3 py-2 border rounded disabled:opacity-50"
-    >
-      Prev
-    </button>
-
-    {/* PAGE LOGIC */}
-    {(() => {
-      const total = pagination.totalPages;
-      const current = page;
-      const delta = 2; // kitne pages around current
-
-      const pages: (number | string)[] = [];
-
-      for (let i = 1; i <= total; i++) {
-        if (
-          i === 1 || // first
-          i === total || // last
-          (i >= current - delta && i <= current + delta)
-        ) {
-          pages.push(i);
-        } else if (
-          pages[pages.length - 1] !== '...'
-        ) {
-          pages.push('...');
-        }
-      }
-
-      return pages.map((p, index) =>
-        p === '...' ? (
-          <span key={index} className="px-2">
-            ...
-          </span>
-        ) : (
+      {/* ===== 🔥 PAGINATION ADDED ===== */}
+      {pagination && pagination.totalPages > 1 && (
+        <div className="flex justify-center mt-10 gap-2 flex-wrap items-center">
+          {/* PREV */}
           <button
-            key={p}
-            onClick={() => setPage(Number(p))}
-            className={`px-3 py-2 border rounded ${
-              page === p
-                ? 'bg-whatsapp-green text-white'
-                : 'hover:bg-gray-100'
-            }`}
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+            className="px-3 py-2 border rounded disabled:opacity-50"
           >
-            {p}
+            Prev
           </button>
-        )
-      );
-    })()}
 
-    {/* NEXT */}
-    <button
-      disabled={page === pagination.totalPages}
-      onClick={() => setPage(page + 1)}
-      className="px-3 py-2 border rounded disabled:opacity-50"
-    >
-      Next
-    </button>
+          {/* PAGE LOGIC */}
+          {(() => {
+            const total = pagination.totalPages;
+            const current = page;
+            const delta = 2; // kitne pages around current
 
-  </div>
-)}
+            const pages: (number | string)[] = [];
+
+            for (let i = 1; i <= total; i++) {
+              if (
+                i === 1 || // first
+                i === total || // last
+                (i >= current - delta && i <= current + delta)
+              ) {
+                pages.push(i);
+              } else if (pages[pages.length - 1] !== "...") {
+                pages.push("...");
+              }
+            }
+
+            return pages.map((p, index) =>
+              p === "..." ? (
+                <span key={index} className="px-2">
+                  ...
+                </span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => setPage(Number(p))}
+                  className={`px-3 py-2 border rounded ${
+                    page === p
+                      ? "bg-whatsapp-green text-white"
+                      : "hover:bg-gray-100"
+                  }`}
+                >
+                  {p}
+                </button>
+              )
+            );
+          })()}
+
+          {/* NEXT */}
+          <button
+            disabled={page === pagination.totalPages}
+            onClick={() => setPage(page + 1)}
+            className="px-3 py-2 border rounded disabled:opacity-50"
+          >
+            Next
+          </button>
+        </div>
+      )}
     </section>
   );
 }
