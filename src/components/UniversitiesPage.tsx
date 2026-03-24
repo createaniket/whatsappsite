@@ -3,26 +3,28 @@ import { Card, CardContent, CardHeader } from './ui/card';
 import { Badge } from './ui/badge';
 import { Input } from './ui/input';
 import { Users, MessageCircle, CheckCircle, Search } from 'lucide-react';
-import { getUniversityCounts } from '../api/groupApi'; // ✅ IMPORTANT
+import { getUniversityCounts } from '../api/groupApi';
 
 interface UniversitiesPageProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   groups: any[];
   universities: string[];
+  setCurrentPage: (page: any) => void;
 }
 
 export function UniversitiesPage({
   searchQuery,
   setSearchQuery,
   groups,
-  universities
+  universities,
+  setCurrentPage
 }: UniversitiesPageProps) {
 
   const [localSearch, setLocalSearch] = useState('');
   const [counts, setCounts] = useState<any[]>([]);
 
-  // ✅ FETCH COUNTS FROM API
+  // ✅ FETCH COUNTS
   useEffect(() => {
     const fetchCounts = async () => {
       try {
@@ -36,13 +38,13 @@ export function UniversitiesPage({
     fetchCounts();
   }, []);
 
-  // ✅ GET COUNT FROM API
+  // ✅ COUNT FROM API
   const getCount = (university: string) => {
     const found = counts.find(c => c.university === university);
     return found ? found.count : 0;
   };
 
-  // OPTIONAL: stats (members + verified)
+  // ✅ MEMBER + VERIFIED
   const getUniversityStats = (university: string) => {
     const filteredGroups = groups.filter(
       group => group.university === university
@@ -63,9 +65,10 @@ export function UniversitiesPage({
     university.toLowerCase().includes(effectiveSearch.toLowerCase())
   );
 
+  // ✅ CLEAN CLICK HANDLER (ONLY ONE)
   const handleUniversityClick = (university: string) => {
     setSearchQuery(university);
-    window.location.hash = 'browse';
+    setCurrentPage('home'); // 👈 IMPORTANT
   };
 
   return (
@@ -118,7 +121,6 @@ export function UniversitiesPage({
         </div>
       ) : (
 
-        /* GRID */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
           {filteredUniversities.map(university => {
@@ -178,6 +180,7 @@ export function UniversitiesPage({
 
                   </div>
 
+                  {/* 👇 NO CLICK HERE NOW */}
                   <div className="mt-4 pt-3 border-t">
                     <p className="text-xs text-whatsapp-green text-center">
                       Click to view groups

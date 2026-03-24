@@ -95,6 +95,7 @@ export default function App() {
             setSearchQuery={setSearchQuery}
             groups={groups}
             universities={universities}
+            setCurrentPage={setCurrentPage}
           />
         );
 
