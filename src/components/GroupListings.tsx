@@ -18,6 +18,10 @@ interface GroupListingsProps {
   setSearchQuery: (query: string) => void;
   universities: string[];
   subjects: string[];
+
+  page: number;
+  setPage: (page: number) => void;
+  pagination: any;
 }
 
 export function GroupListings({ 
@@ -30,6 +34,9 @@ export function GroupListings({
   setSearchQuery,
   universities,
   subjects,
+  page,
+  setPage,
+  pagination
 }: GroupListingsProps) {
 
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
@@ -255,7 +262,78 @@ export function GroupListings({
             ))}
           </div>
         )}
+
+      
       </div>
+
+
+              {/* ===== 🔥 PAGINATION ADDED ===== */}
+              {pagination && pagination.totalPages > 1 && (
+  <div className="flex justify-center mt-10 gap-2 flex-wrap items-center">
+
+    {/* PREV */}
+    <button
+      disabled={page === 1}
+      onClick={() => setPage(page - 1)}
+      className="px-3 py-2 border rounded disabled:opacity-50"
+    >
+      Prev
+    </button>
+
+    {/* PAGE LOGIC */}
+    {(() => {
+      const total = pagination.totalPages;
+      const current = page;
+      const delta = 2; // kitne pages around current
+
+      const pages: (number | string)[] = [];
+
+      for (let i = 1; i <= total; i++) {
+        if (
+          i === 1 || // first
+          i === total || // last
+          (i >= current - delta && i <= current + delta)
+        ) {
+          pages.push(i);
+        } else if (
+          pages[pages.length - 1] !== '...'
+        ) {
+          pages.push('...');
+        }
+      }
+
+      return pages.map((p, index) =>
+        p === '...' ? (
+          <span key={index} className="px-2">
+            ...
+          </span>
+        ) : (
+          <button
+            key={p}
+            onClick={() => setPage(Number(p))}
+            className={`px-3 py-2 border rounded ${
+              page === p
+                ? 'bg-whatsapp-green text-white'
+                : 'hover:bg-gray-100'
+            }`}
+          >
+            {p}
+          </button>
+        )
+      );
+    })()}
+
+    {/* NEXT */}
+    <button
+      disabled={page === pagination.totalPages}
+      onClick={() => setPage(page + 1)}
+      className="px-3 py-2 border rounded disabled:opacity-50"
+    >
+      Next
+    </button>
+
+  </div>
+)}
     </section>
   );
 }

@@ -21,6 +21,10 @@ export default function App() {
   const [subjects, setSubjects] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ✅ PAGINATION
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<any>(null);
+
   const groupListingsRef = useRef<HTMLDivElement | null>(null);
 
   // ✅ FILTERS LOAD
@@ -38,13 +42,21 @@ export default function App() {
     fetchFilters();
   }, []);
 
-  // ✅ GROUPS FETCH (MAIN FIX)
+  // ✅ RESET PAGE ON FILTER CHANGE
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, selectedUniversity, selectedSubject]);
+
+  // ✅ GROUPS FETCH
   useEffect(() => {
     const delay = setTimeout(async () => {
       try {
         setLoading(true);
 
-        const params: any = {};
+        const params: any = {
+          page,
+          limit: 24,
+        };
 
         if (searchQuery) params.search = searchQuery;
         if (selectedUniversity !== 'all') params.university = selectedUniversity;
@@ -53,6 +65,7 @@ export default function App() {
         const res = await getGroups(params);
 
         setGroups(res?.data || []);
+        setPagination(res?.pagination || null);
       } catch (err) {
         console.error(err);
       } finally {
@@ -61,7 +74,7 @@ export default function App() {
     }, 400);
 
     return () => clearTimeout(delay);
-  }, [searchQuery, selectedUniversity, selectedSubject]);
+  }, [searchQuery, selectedUniversity, selectedSubject, page]);
 
   const handleSearchFocus = () => {
     if (currentPage === 'home' && groupListingsRef.current) {
@@ -107,6 +120,9 @@ export default function App() {
                   setSearchQuery={setSearchQuery}
                   universities={universities}
                   subjects={subjects}
+                  page={page}
+                  setPage={setPage}
+                  pagination={pagination}
                 />
               )}
             </div>
