@@ -1,3 +1,6 @@
+import { getGroups, getFilters } from "../api/groupApi";
+
+
 export interface GroupChat {
   id: string;
   name: string;
@@ -16,6 +19,8 @@ export interface GroupChat {
   dataSource: 'admin_reported' | 'university_system' | 'self_reported' | 'estimated';
   lastUpdated: string;
   adminContact?: string;
+  city: string;
+  updatedAt: string;
 }
 
 export const mockGroupChats: GroupChat[] = [
@@ -35,7 +40,10 @@ export const mockGroupChats: GroupChat[] = [
     lastActive: '2 min ago',
     dataSource: 'university_system',
     lastUpdated: '2024-12-18',
-    adminContact: 'cs-admin@ox.ac.uk'
+    adminContact: 'cs-admin@ox.ac.uk',
+    city: 'Oxford',
+    updatedAt: '2024-12-18'
+
   },
   {
     id: '2',
@@ -53,7 +61,9 @@ export const mockGroupChats: GroupChat[] = [
     lastActive: '5 min ago',
     dataSource: 'admin_reported',
     lastUpdated: '2024-12-17',
-    adminContact: 'medicine@cam.ac.uk'
+    adminContact: 'medicine@cam.ac.uk',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '3',
@@ -71,7 +81,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '1 min ago',
     dataSource: 'estimated',
-    lastUpdated: '2024-12-15'
+    lastUpdated: '2024-12-15',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '4',
@@ -88,7 +100,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '3 min ago',
     dataSource: 'admin_reported',
-    lastUpdated: '2024-12-18'
+    lastUpdated: '2024-12-18',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '5',
@@ -106,7 +120,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '7 min ago',
     dataSource: 'self_reported',
-    lastUpdated: '2024-12-10'
+    lastUpdated: '2024-12-10',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '6',
@@ -123,7 +139,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '12 min ago',
     dataSource: 'university_system',
-    lastUpdated: '2024-12-18'
+    lastUpdated: '2024-12-18',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '7',
@@ -141,7 +159,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '4 min ago',
     dataSource: 'estimated',
-    lastUpdated: '2024-12-12'
+    lastUpdated: '2024-12-12',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '8',
@@ -158,7 +178,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '15 min ago',
     dataSource: 'admin_reported',
-    lastUpdated: '2024-12-16'
+    lastUpdated: '2024-12-16',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '9',
@@ -176,7 +198,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '8 min ago',
     dataSource: 'self_reported',
-    lastUpdated: '2024-12-14'
+    lastUpdated: '2024-12-14',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '10',
@@ -193,7 +217,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '6 min ago',
     dataSource: 'university_system',
-    lastUpdated: '2024-12-18'
+    lastUpdated: '2024-12-18',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '11',
@@ -211,7 +237,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '11 min ago',
     dataSource: 'estimated',
-    lastUpdated: '2024-12-13'
+    lastUpdated: '2024-12-13',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   },
   {
     id: '12',
@@ -228,7 +256,9 @@ export const mockGroupChats: GroupChat[] = [
     isVerified: true,
     lastActive: '9 min ago',
     dataSource: 'admin_reported',
-    lastUpdated: '2024-12-17'
+    lastUpdated: '2024-12-17',
+        city: 'Oxford',
+    updatedAt: '2024-12-18'
   }
 ];
 
@@ -259,3 +289,23 @@ export const subjects = [
   'History',
   'Natural Sciences'
 ];
+
+
+// ❌ static export hata de
+// export const mockGroupChats = [...]
+
+
+
+export const fetchMockData = async () => {
+  const [groupsRes, filtersRes] = await Promise.all([
+    getGroups(),
+    getFilters(),
+  ]);
+
+  console.log("Groups API kkk:", groupsRes);
+  return {
+    mockGroupChats: groupsRes?.data || [],
+    universities: filtersRes?.universities || [],
+    subjects: filtersRes?.subjects || [],
+  };
+};

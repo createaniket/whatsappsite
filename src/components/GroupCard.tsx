@@ -11,6 +11,8 @@ interface GroupCardProps {
 }
 
 export function GroupCard({ group }: GroupCardProps) {
+
+  console.log("Rendering GroupCard for:", group);
   const [hasJoined, setHasJoined] = useState(false);
 
 
@@ -59,60 +61,7 @@ export function GroupCard({ group }: GroupCardProps) {
     );
   };
 
-  // const getMemberCountDisplay = () => {
-  //   switch (group.memberCountType) {
-  //     case 'exact':
-  //       return `${group.memberCount} members`;
-  //     case 'estimated':
-  //       return `~${group.memberCount} members`;
-  //     case 'range':
-  //       return group.memberRange 
-  //         ? `${group.memberRange.min}-${group.memberRange.max} members`
-  //         : `~${group.memberCount} members`;
-  //     default:
-  //       return `${group.memberCount} members`;
-  //   }
-  // };
 
-  // const getDataSourceInfo = () => {
-  //   switch (group.dataSource) {
-  //     case 'university_system':
-  //       return {
-  //         label: 'University System',
-  //         description: 'Member count automatically synced from university records',
-  //         icon: <Shield className="w-3 h-3" />,
-  //         color: 'text-green-600'
-  //       };
-  //     case 'admin_reported':
-  //       return {
-  //         label: 'Admin Reported',
-  //         description: 'Member count reported by group administrators',
-  //         icon: <Users className="w-3 h-3" />,
-  //         color: 'text-blue-600'
-  //       };
-  //     case 'self_reported':
-  //       return {
-  //         label: 'Self Reported',
-  //         description: 'Member count self-reported by group creators',
-  //         icon: <Info className="w-3 h-3" />,
-  //         color: 'text-orange-600'
-  //       };
-  //     case 'estimated':
-  //       return {
-  //         label: 'Estimated',
-  //         description: 'Member count estimated based on group activity and engagement',
-  //         icon: <AlertCircle className="w-3 h-3" />,
-  //         color: 'text-gray-600'
-  //       };
-  //     default:
-  //       return {
-  //         label: 'Unknown',
-  //         description: 'Data source not specified',
-  //         icon: <AlertCircle className="w-3 h-3" />,
-  //         color: 'text-gray-600'
-  //       };
-  //   }
-  // };
 
   // const dataSourceInfo = getDataSourceInfo();
   const isDataFresh = new Date(group.lastUpdated) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000); // Within 7 days
@@ -141,40 +90,13 @@ export function GroupCard({ group }: GroupCardProps) {
   </p>
 
         
-        {/* <div className="flex items-center justify-between text-sm text-muted-foreground mb-3">
-          <div className="flex items-center space-x-1">
-            <Users className="w-4 h-4" />
-            <span>{getMemberCountDisplay()}</span>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger>
-                  <div className={`${dataSourceInfo.color} ml-1`}>
-                    {dataSourceInfo.icon}
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <div className="text-xs">
-                    <div className="font-medium mb-1">{dataSourceInfo.label}</div>
-                    <div>{dataSourceInfo.description}</div>
-                    <div className="mt-1 text-gray-500">
-                      Updated: {new Date(group.lastUpdated).toLocaleDateString()}
-                    </div>
-                  </div>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Clock className="w-4 h-4" />
-            <span>{group.lastActive}</span>
-          </div>
-        </div> */}
+
 
         {/* Data freshness indicator */}
         <div className="flex items-center text-xs text-muted-foreground mb-3">
           <Calendar className="w-3 h-3 mr-1" />
           <span>
-            Data {isDataFresh ? 'updated' : 'last updated'} {new Date(group.lastUpdated).toLocaleDateString()}
+            Data {isDataFresh ? 'updated' : 'last updated'} {new Date(group.updatedAt).toLocaleDateString()}
           </span>
           {!isDataFresh && (
             <span className="ml-1 text-orange-600">(may be outdated)</span>
@@ -188,7 +110,7 @@ export function GroupCard({ group }: GroupCardProps) {
           </div>
         )}
         
-        <div className="flex flex-wrap gap-1">
+        {/* <div className="flex flex-wrap gap-1">
           {group.tags.slice(0, 3).map(tag => (
             <Badge key={tag} variant="secondary" className="text-xs">
               {tag}
@@ -199,7 +121,28 @@ export function GroupCard({ group }: GroupCardProps) {
               +{group.tags.length - 3} more
             </Badge>
           )}
-        </div>
+        </div> */}
+
+
+<div className="flex flex-wrap gap-2">
+  {group.city && (
+    <Badge variant="secondary" className="text-xs">
+      📍 {group.city}
+    </Badge>
+  )}
+
+  {group.subject && (
+    <Badge variant="secondary" className="text-xs">
+      🎓 {group.subject}
+    </Badge>
+  )}
+
+  {group.university && (
+    <Badge variant="secondary" className="text-xs">
+      🏫 {group.university}
+    </Badge>
+  )}
+</div>
       </CardContent>
       
       <CardFooter className="pt-3">

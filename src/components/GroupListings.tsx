@@ -5,7 +5,7 @@ import { Input } from './ui/input';
 import { GroupCard } from './GroupCard';
 import { DataPrivacyInfo } from './DataPrivacyInfo';
 import { GroupChat } from './mockData';
-import { universities, subjects } from './mockData';
+
 import { Filter, Search, X } from 'lucide-react';
 
 interface GroupListingsProps {
@@ -16,6 +16,8 @@ interface GroupListingsProps {
   setSelectedSubject: (subject: string) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  universities: string[];
+  subjects: string[];
 }
 
 export function GroupListings({ 
@@ -25,7 +27,9 @@ export function GroupListings({
   selectedSubject,
   setSelectedSubject,
   searchQuery,
-  setSearchQuery
+  setSearchQuery,
+  universities,
+  subjects,
 }: GroupListingsProps) {
 
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery);
@@ -36,7 +40,9 @@ export function GroupListings({
   // ✅ FIX: memoize karo
   const allSearchTerms = useMemo(() => {
     return [...universities, ...subjects];
-  }, []);
+
+    // This combines universities and subjects into one array of search terms.
+  }, [ universities, subjects]);
 
   const hasActiveFilters =
     selectedUniversity !== 'all' ||
